@@ -32,15 +32,9 @@ class ComputerSimulation extends Simulation {
       .exec(
         http("Search")
           .get("/computers?f=${searchCriterion}")
-          .check(css("a:contains('${searchComputerName}')", "href").saveAs("computerURL"))
+//          .check(css("a:contains('${searchComputerName}')", "href").saveAs("computerURL"))
       )
-      .pause(1)
-      .exec(
-        http("Select")
-          .get("${computerURL}")
-          .check(status.is(200))
-      )
-      .pause(1)
+
   }
 
   object AddComputer{
@@ -74,16 +68,26 @@ class ComputerSimulation extends Simulation {
             .formParam("company", "37")
             .check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))
         )
-    }.exitHereIfFailed
+    }
   }
   val computer = scenario("user stream")
-    .exec(SearchComputer.searchComputer)
-    .exec(AddComputer.addComputer)
-    .exec(EditComputer.editComputer)
+    .repeat(5){
+      exec(SearchComputer.searchComputer)
+    }
+    .pause(10)
+    .repeat(5){
+      exec(AddComputer.addComputer)
+    }
+    .pause(10)
+    .repeat(2){
+      exec(EditComputer.editComputer)
+    }
+    .pause(2)
+
 
   setUp(
     computer.inject(
-      rampUsersPerSec(800) to(884) during(5 minutes) randomized
+      rampUsersPerSec(5) to(10) during(5 minutes) randomized
     ).protocols(httpProtocol))
 
 
