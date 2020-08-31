@@ -79,30 +79,33 @@ class ComputerSimulation extends Simulation {
         http("delete")
           .post(s"/computers/${{deleteid}}/delete")
           .header("content-type","application/x-www-form-urlencoded")
-          .check(status.is(303))
+          .check(status.not(500))
       )
     }
   }
   val computer = scenario("user stream")
-    .repeat(1){
+    .repeat(30){
       exec(SearchComputer.searchComputer)
     }
-    .pause(10 seconds)
-    .repeat(1){
+    .pause(10 minutes)
+    .repeat(50){
       exec(AddComputer.addComputer)
     }
-    .pause(10 seconds)
-    .repeat(1){
+    .pause(10 minutes)
+    .repeat(20){
       exec(EditComputer.editComputer)
     }
-    .pause(10 seconds)
+    .pause(10 minutes)
+      .repeat(10){
+        exec(DeleteComputer.deleteComputer)
+      }
 
 
   setUp(
     computer.inject(
-      rampConcurrentUsers(50) to(71) during(10 seconds)
+      rampConcurrentUsers(50) to(71) during(1 hours)
 
-//      rampUsersPerSec(10) to(20) during(10 seconds) randomized
+//      rampUsersPerSec(10) to(20) during(10 minutes) randomized
     ).protocols(httpProtocol))
 
 
