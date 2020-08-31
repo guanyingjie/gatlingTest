@@ -20,6 +20,7 @@ class ComputerSimulation extends Simulation {
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36")
 
   var randomName = ThreadLocalRandom.current().nextInt(0,100)
+  var deleteid = ThreadLocalRandom.current().nextInt(1,100)
 
   object SearchComputer{
     val feeder = csv("search.csv").random
@@ -48,7 +49,9 @@ class ComputerSimulation extends Simulation {
           .formParam("introduced","2020-08-25")
           .formParam("discontinued","2020-10-31")
           .formParam("company","3")
-          .check(status.is(200))
+//          .check(status.is(201))//
+//         .check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))
+
       )
     }
   }
@@ -66,28 +69,40 @@ class ComputerSimulation extends Simulation {
             .formParam("introduced", "2012-05-30")
             .formParam("discontinued", "")
             .formParam("company", "37")
-            .check(status.is(session => 200 + ThreadLocalRandom.current.nextInt(2)))
         )
     }
   }
+
+  object DeleteComputer{
+    val deleteComputer = {
+      exec(
+        http("delete")
+          .post(s"/computers/${{deleteid}}/delete")
+          .header("content-type","application/x-www-form-urlencoded")
+          .check(status.is(303))
+      )
+    }
+  }
   val computer = scenario("user stream")
-    .repeat(5){
+    .repeat(1){
       exec(SearchComputer.searchComputer)
     }
-    .pause(10)
-    .repeat(5){
+    .pause(10 seconds)
+    .repeat(1){
       exec(AddComputer.addComputer)
     }
-    .pause(10)
-    .repeat(2){
+    .pause(10 seconds)
+    .repeat(1){
       exec(EditComputer.editComputer)
     }
-    .pause(2)
+    .pause(10 seconds)
 
 
   setUp(
     computer.inject(
-      rampUsersPerSec(5) to(10) during(5 minutes) randomized
+      rampConcurrentUsers(50) to(71) during(10 seconds)
+
+//      rampUsersPerSec(10) to(20) during(10 seconds) randomized
     ).protocols(httpProtocol))
 
 

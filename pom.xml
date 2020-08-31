@@ -62,6 +62,9 @@
         <groupId>io.gatling</groupId>
         <artifactId>gatling-maven-plugin</artifactId>
         <version>${gatling-maven-plugin.version}</version>
+<!--        <configuration>-->
+<!--          <simulationClass>MANUALLY_REPLACE_WITH_YOUR_SIMULATION_CLASS</simulationClass>-->
+<!--        </configuration>-->
       </plugin>
     </plugins>
   </build>
