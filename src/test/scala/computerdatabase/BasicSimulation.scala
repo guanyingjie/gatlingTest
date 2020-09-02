@@ -20,7 +20,7 @@ class ComputerSimulation extends Simulation {
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36")
 
   var randomName = ThreadLocalRandom.current().nextInt(0,100)
-  var deleteid = ThreadLocalRandom.current().nextInt(1,1000)
+  var deleteid = ThreadLocalRandom.current().nextInt(1,10000)
 
   object SearchComputer{
     val feeder = csv("search.csv").random
