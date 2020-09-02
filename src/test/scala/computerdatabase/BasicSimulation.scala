@@ -20,7 +20,7 @@ class ComputerSimulation extends Simulation {
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36")
 
   var randomName = ThreadLocalRandom.current().nextInt(0,100)
-  var deleteid = ThreadLocalRandom.current().nextInt(1,100)
+  var deleteid = ThreadLocalRandom.current().nextInt(1,1000)
 
   object SearchComputer{
     val feeder = csv("search.csv").random
@@ -79,7 +79,7 @@ class ComputerSimulation extends Simulation {
         http("delete")
           .post(s"/computers/${{deleteid}}/delete")
           .header("content-type","application/x-www-form-urlencoded")
-          .check(status.not(500))
+//          .check(status.not(500))
       )
     }
   }
@@ -103,9 +103,11 @@ class ComputerSimulation extends Simulation {
 
   setUp(
     computer.inject(
-      rampConcurrentUsers(50) to(71) during(1 hours)
+//      rampConcurrentUsers(50) to(71) during(1 hours)
+        rampConcurrentUsers(199) to(150) during(5 minutes)
 
-//      rampUsersPerSec(10) to(20) during(10 minutes) randomized
+
+      //      rampUsersPerSec(10) to(20) during(10 minutes) randomized
     ).protocols(httpProtocol))
 
 
