@@ -104,7 +104,7 @@ class ComputerSimulation extends Simulation {
   setUp(
     computer.inject(
 //      rampConcurrentUsers(50) to(71) during(1 hours)
-        rampConcurrentUsers(199) to(150) during(5 minutes)
+        rampConcurrentUsers(50) to(71) during(5 minutes)
 
 
       //      rampUsersPerSec(10) to(20) during(10 minutes) randomized
