@@ -66,7 +66,7 @@ class ComputerSimulation extends Simulation {
         .exec(
           http("edit")
             .post("/computers")
-            .formParam("name", "yingjiedeMac02")
+            .formParam("name", "yingjiedeMac")
             .formParam("introduced", "2012-05-30")
             .formParam("discontinued", "")
             .formParam("company", "37")
@@ -75,15 +75,21 @@ class ComputerSimulation extends Simulation {
   }
 
   object DeleteComputer{
-    val deleteComputer = {
+    val deleteComputer= {
       exec(
-        http("delete")
-          .post(s"/computers/${{deleteid}}/delete")
-          .header("content-type","application/x-www-form-urlencoded")
-//          .check(status.not(500))
-      )
+      http("filterComputer")
+        .get("/computers?f=yingjie")
+        .check(regex("""computers\/([0-9]{3,5})""").exists.saveAs("topComputerInList"))
+
+    ).pause(5 )
+        .exec(
+          http("delete")
+            .post("/computers/${topComputerInList}/delete"))
+
+
     }
-  }
+}
+
   val computer = scenario("user stream")
     .repeat(15){
         exec(SearchComputer.searchComputer)
@@ -97,18 +103,14 @@ class ComputerSimulation extends Simulation {
         exec(EditComputer.editComputer)
       }
       .pause(10 seconds)
-        .repeat(5){
+        .repeat(10){
           exec(DeleteComputer.deleteComputer)
         }
 
 
   setUp(
     computer.inject(
-//      rampConcurrentUsers(50) to(71) during(1 hours)
         rampConcurrentUsers(50) to(71) during(5 seconds)
-
-
-      //      rampUsersPerSec(10) to(20) during(10 seconds) randomized
     ).protocols(httpProtocol))
 
 
