@@ -20,7 +20,8 @@ class ComputerSimulation extends Simulation {
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36")
 
   var randomName = ThreadLocalRandom.current().nextInt(0,100)
-  var deleteid = ThreadLocalRandom.current().nextInt(10000,11000)
+  var deleteid = Math.random()*1000
+  var addid = ThreadLocalRandom.current().nextInt(10,1000)
 
   object SearchComputer{
     val feeder = csv("search.csv").random
@@ -45,7 +46,7 @@ class ComputerSimulation extends Simulation {
           .post("/computers")
           .header("authority","computer-database.gatling.io")
           .header("content-type","application/x-www-form-urlencoded")
-          .formParam("name","yingjiedeMac02")
+          .formParam("name",s"yingjiedeMac+${addid}")
           .formParam("introduced","2020-08-25")
           .formParam("discontinued","2020-10-31")
           .formParam("company","3")
@@ -85,20 +86,20 @@ class ComputerSimulation extends Simulation {
   }
   val computer = scenario("user stream")
     .repeat(15){
-      exec(SearchComputer.searchComputer)
-    }
-    .pause(10 seconds)
-    .repeat(25){
-      exec(AddComputer.addComputer)
-    }
-    .pause(10 seconds)
-    .repeat(10){
-      exec(EditComputer.editComputer)
-    }
-    .pause(10 seconds)
-      .repeat(5){
-        exec(DeleteComputer.deleteComputer)
+        exec(SearchComputer.searchComputer)
       }
+      .pause(10 seconds)
+      .repeat(25){
+        exec(AddComputer.addComputer)
+      }
+      .pause(10 seconds)
+      .repeat(10){
+        exec(EditComputer.editComputer)
+      }
+      .pause(10 seconds)
+        .repeat(5){
+          exec(DeleteComputer.deleteComputer)
+        }
 
 
   setUp(
