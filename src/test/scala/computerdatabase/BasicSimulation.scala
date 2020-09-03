@@ -91,26 +91,26 @@ class ComputerSimulation extends Simulation {
 }
 
   val computer = scenario("user stream")
-    .repeat(15){
+    .repeat(5){
         exec(SearchComputer.searchComputer)
       }
       .pause(10 seconds)
-      .repeat(25){
+      .repeat(7){
         exec(AddComputer.addComputer)
       }
       .pause(10 seconds)
-      .repeat(10){
+      .repeat(3){
         exec(EditComputer.editComputer)
       }
       .pause(10 seconds)
-        .repeat(10){
+        .repeat(2){
           exec(DeleteComputer.deleteComputer)
         }
 
 
   setUp(
     computer.inject(
-        rampConcurrentUsers(50) to(71) during(5 seconds)
+        rampConcurrentUsers(50) to(71) during(5 minutes)
     ).protocols(httpProtocol))
 
 
